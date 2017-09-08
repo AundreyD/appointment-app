@@ -3,7 +3,7 @@ import axios from "axios";
 axios.defaults.xsrfCookieName = 'csrftoken'
 axios.defaults.xsrfHeaderName = 'X-CSRFToken'
 
-module.exports = {
+export class AjaxCalls{
 
     getAppointments(){
         axios.get('http://localhost:8000/api/appointment/').then(function (response) {
@@ -12,7 +12,7 @@ module.exports = {
           .catch(function (error) {
             console.log(error);
           });
-    },
+    }
 
     postAppointment(date, time, desc ){
         axios.post('http://localhost:8000/api/appointment/',{

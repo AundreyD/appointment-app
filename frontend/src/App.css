@@ -12,10 +12,17 @@
   height: 150px;
   padding: 20px;
   color: white;
+  padding-bottom: 50px;
 }
 
 .App-intro {
   font-size: large;
+}
+
+.body {
+  padding-top: 20px;
+  width: 90vw;
+  padding-left: 40px;
 }
 
 @keyframes App-logo-spin {

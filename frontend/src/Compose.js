@@ -20,6 +20,10 @@ export class Compose extends Component{
         router: PropTypes.object
     }
 
+    componentWillReceiveProps(nextProps){
+        console.log('nextprops',nextProps)
+    }
+
     formatDate() {
         var d = new Date(),
             month = '' + (d.getMonth() + 1),
@@ -41,49 +45,68 @@ export class Compose extends Component{
     }
 
     handleClick(e){
-        e.preventDefault()
+        this.postAppointment(this.props.date, this.myTime, this.props.desc)
+        this.props.history.push('/')
+        this.getAppointments()
+    }
+
+    getAppointments(){
+        axios.get('http://localhost:8000/api/appointment/').then((response) => {
+            this.props.setTableRows(response.data) 
+          })
+          .catch((error) => {
+            alert(error);
+          });
+      }
+
+    pushDate(){
         var hiddenInputElement = document.getElementById("example-datepicker")
         let date = hiddenInputElement.value.split('T')[0];
-        console.log(date);
-        //console.log(this)
-        //console.log(this.now)
-        var time= document.getElementById("time")
-        let timee = time.value
-        console.log(timee);
+        this.props.setDate(date)
+    }
 
+    pushDescription(){
         var desc = document.getElementById("desc")
         let descrip = desc.value
         console.log(descrip);
-
-        this.setState({
-            time: this.myTime,
-            date: date,
-            desc: descrip
-        }
-        )
-        console.log(this)
-        this.postAppointment(date, this.myTime, descrip)
-        this.props.history.push('/')
+        this.props.setDesc(descrip)
     }
 
-    handleChange(e){
-        //this.myTime = new Date(e).toTimeString().replace(/.*(\d{2}:\d{2}:\d{2}).*/, "$1");
-       // console.log(this.myTime)
+    pushTime(e){
         let date = new Date(null);
         date.setSeconds(e); // specify value for SECONDS here
         this.myTime = date.toISOString().substr(11, 8);
-        // console.log(result)
+        this.props.setTime(this.myTime)
     }
-   
+
+    handleChange(e){
+        
+    }
+
+    buttonStatus(){
+        return this.props.time && this.props.date !== undefined && this.props.desc.length > 1  ? '' : 'disabled'
+    }
+
+    dateStatus(){
+        return this.props.date !== undefined ? this.props.date : this.myTime
+    }
+
+    timeStatus(){
+
+    }
 
     render(){
-        let status = '';
+        let status = this.buttonStatus();
+        // let dateValue = this.dateStatus();
+        console.log('date', this.props.date)
+        console.log('today', this.now)
+        const today = this.now
         return(
            
             <div>
                 <Form horizontal>
                     <Button 
-                    
+                    className={status}
                     onClick={this.handleClick.bind(this)}>
                         Add
                     </Button>
@@ -98,7 +121,7 @@ export class Compose extends Component{
                         Date
                     </Col>
                     <Col sm={10}>
-                        <Datepicker  id="example-datepicker" value={this.now} minDate={this.now} />
+                        <Datepicker  id="example-datepicker" value={this.props.date} minDate={today} onBlur={this.pushDate.bind(this)}/>
                     </Col>
                     </FormGroup>
 
@@ -107,7 +130,7 @@ export class Compose extends Component{
                         Time
                     </Col>
                     <Col sm={10}>
-                        <TimePicker id="time" onChange={this.handleChange.bind(this)}/>
+                        <TimePicker id="time" onChange={this.pushTime.bind(this)}/>
                     </Col>
                     </FormGroup>
 
@@ -116,7 +139,7 @@ export class Compose extends Component{
                         Description
                     </Col>
                     <Col sm={10}>
-                        <FormControl id='desc' type="input" placeholder="description"  inputRef={ref => { this.input = ref; }}  />
+                        <FormControl id='desc' type="input" placeholder="description"  onChange={this.pushDescription.bind(this)} />
                     </Col>
                     </FormGroup>
 

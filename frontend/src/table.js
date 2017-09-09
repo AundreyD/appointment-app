@@ -1,11 +1,8 @@
 import React, { Component } from 'react';
-import {BootstrapTable, TableHeaderColumn, handleAddRow} from 'react-bootstrap-table';
+import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 
 export class Table extends Component{
-    constructor(props){
-        super(props)
-        
-      }
+    
       
     render(){
         return(

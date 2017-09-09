@@ -1,16 +1,22 @@
 import React, { Component } from 'react';
-import {Link} from 'react-router-dom'
-import {AjaxCalls} from './ajax';
+import {BootstrapTable, TableHeaderColumn, handleAddRow} from 'react-bootstrap-table';
 
-
-export const Row = React.createClass({
-    render: function() {
-        return (
-            <tr>
-                <td>{this.props.Date}</td>
-                <td>{this.props.Time}</td>
-                <td>{this.props.Desc}</td>
-            </tr>
-        );
+export class Table extends Component{
+    constructor(props){
+        super(props)
+        
+      }
+      
+    render(){
+        return(
+            <div>
+            <BootstrapTable striped hover data={ this.props.info } search searchPlaceholder='Search Here'>
+                <TableHeaderColumn  dataField='date' isKey> Date</TableHeaderColumn>
+                <TableHeaderColumn dataField='time'>Time</TableHeaderColumn>
+                <TableHeaderColumn dataField='description'>Description</TableHeaderColumn>
+            </BootstrapTable>
+            </div>
+        )
     }
-});
+   
+}

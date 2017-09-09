@@ -8,6 +8,7 @@ export class AjaxCalls{
     getAppointments(){
         axios.get('http://localhost:8000/api/appointment/').then(function (response) {
             console.log(response);
+            
           })
           .catch(function (error) {
             console.log(error);

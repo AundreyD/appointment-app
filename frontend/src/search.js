@@ -11,7 +11,7 @@ export class Search extends Component{
                 <FormGroup controlId="formInlineName">
                 <ControlLabel>Search Parameters</ControlLabel>
                 {' '}
-                <FormControl type="text" placeholder="Dentist" />
+                <FormControl type="text" placeholder="Description here" ref="search"/>
                 </FormGroup>
                 {' '}
                 <Button type="submit">

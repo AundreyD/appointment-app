@@ -1,5 +1,5 @@
 
-import {SET_DATE, SET_TABLE_ROWS, SET_DESC, SET_TIME} from '../actions/actions';
+import {SET_DATE, SET_TABLE_ROWS, SET_DESC, SET_TIME, SET_ALERT_VISIBLE} from '../actions/actions';
 
 const defaultStore = {
     info:{
@@ -31,6 +31,11 @@ export const info = (state = [], action) => {
             return {
                 ...state,
                 tableRows: action.arr
+            }
+        case SET_ALERT_VISIBLE:
+            return {
+                ...state,
+                alertVisible: action.status
             }
         default:
             return state;

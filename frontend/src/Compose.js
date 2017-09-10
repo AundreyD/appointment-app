@@ -20,19 +20,19 @@ export class Compose extends Component{
         router: PropTypes.object
     }
 
-    componentWillReceiveProps(nextProps){
-        console.log('nextprops',nextProps)
-    }
+    // componentWillReceiveProps(nextProps){
+    //     console.log('nextprops',nextProps)
+    // }
 
-    formatDate() {
+    formatDate(){
         var d = new Date(),
             month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
+            day = '' + parseInt(d.getDate() + 1).toString(),
             year = d.getFullYear();
     
         if (month.length < 2) month = '0' + month;
         if (day.length < 2) day = '0' + day;
-    
+        console.log('day',day)
         return [year, month, day].join('-');
     }
 
@@ -41,21 +41,25 @@ export class Compose extends Component{
             date: date,
             time: time,
             description: desc
+        }).catch((error)=>{
+            this.props.setAlertVisible(true);
         })
     }
 
     handleClick(e){
         this.postAppointment(this.props.date, this.myTime, this.props.desc)
-        this.props.history.push('/')
+        
         this.getAppointments()
+        console.log('hello')
     }
 
     getAppointments(){
         axios.get('http://localhost:8000/api/appointment/').then((response) => {
             this.props.setTableRows(response.data) 
+            this.props.history.push('/')
           })
           .catch((error) => {
-            alert(error);
+            this.props.setAlertVisible(true)
           });
       }
 
@@ -79,34 +83,28 @@ export class Compose extends Component{
         this.props.setTime(this.myTime)
     }
 
-    handleChange(e){
-        
-    }
+  
 
-    buttonStatus(){
-        return this.props.time && this.props.date !== undefined && this.props.desc.length > 1  ? '' : 'disabled'
-    }
-
+    b
     dateStatus(){
         return this.props.date !== undefined ? this.props.date : this.myTime
     }
 
-    timeStatus(){
-
-    }
+    handleChange(value, formattedValue) {
+        console.log(value)
+        console.log(formattedValue)
+        this.props.setDate(formattedValue)
+      }
 
     render(){
-        let status = this.buttonStatus();
-        // let dateValue = this.dateStatus();
-        console.log('date', this.props.date)
-        console.log('today', this.now)
-        const today = this.now
+        const today = this.formatDate()
+        const isEnabled = this.props.date.length > 0 && this.props.time.length > 0 && this.props.desc.length > 0;
         return(
            
             <div>
                 <Form horizontal>
                     <Button 
-                    className={status}
+                    disabled={!isEnabled}
                     onClick={this.handleClick.bind(this)}>
                         Add
                     </Button>
@@ -121,7 +119,7 @@ export class Compose extends Component{
                         Date
                     </Col>
                     <Col sm={10}>
-                        <Datepicker  id="example-datepicker" value={this.props.date} minDate={today} onBlur={this.pushDate.bind(this)}/>
+                        <Datepicker  id="example-datepicker" value={this.props.date} minDate={today} onChange={this.handleChange.bind(this)} onBlur={this.pushDate.bind(this)} dateFormat={"YYYY-MM-DD"}/>
                     </Col>
                     </FormGroup>
 
@@ -130,7 +128,7 @@ export class Compose extends Component{
                         Time
                     </Col>
                     <Col sm={10}>
-                        <TimePicker id="time" onChange={this.pushTime.bind(this)}/>
+                        <TimePicker id="time" value={this.props.time } onChange={this.pushTime.bind(this)}/>
                     </Col>
                     </FormGroup>
 

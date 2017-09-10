@@ -1,18 +1,19 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
-import { Router, Route, Switch } from 'react-router-dom';
+import { Router, Route, Switch, Link } from 'react-router-dom';
 import {BootstrapTable, TableHeaderColumn, handleAddRow} from 'react-bootstrap-table';
 import {New} from './New';
 import {Search} from './Search';
 import {Compose} from './Compose';
 import {Table} from './Table';
-import {setDate, setDesc, setTime, setTableRows} from './redux/actions/actions';
+import {setDate, setDesc, setTime, setTableRows, setAlertVisible} from './redux/actions/actions';
 import {connect} from 'react-redux';
+import {Alert, Button} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap/dist/css/bootstrap-theme.css';
 import axios from 'axios';
-
+import 'react-bootstrap-table/dist/react-bootstrap-table.min.css';
 
 
 export class App extends Component {
@@ -26,6 +27,7 @@ export class App extends Component {
     this.props.setDate(this.formatDate())
     this.props.setTime('00:00')
     this.props.setDesc('')
+    this.props.setAlertVisible(false)
   }
   formatDate() {
     var d = new Date(),
@@ -39,6 +41,10 @@ export class App extends Component {
     return [year, month, day].join('-');
   }
 
+  componentWillReceiveProps(){
+    this.getAppointments()
+  }
+
   getAppointments(){
     axios.get('http://localhost:8000/api/appointment/').then((response) => {
         this.props.setTableRows(response.data) 
@@ -47,14 +53,30 @@ export class App extends Component {
         alert(error);
       });
   }
+
+  handleAlertDismiss() {
+    this.props.setAlertVisible(false);
+  }
   
   
   render() {
+    let alertTrigger = this.props.alertVisible ?  
+      <Alert bsStyle="danger" className={'alert'} onDismiss={this.handleAlertDismiss.bind(this)}>
+      <h1>YOU DID SOMETHING WRONG</h1>
+      <h4>THIS ERROR IS SHOWING BECAUSE YOU DIDN'T SELECT A DATE OR A TIME</h4>
+      <p>CLOSE THIS AND TRY AGAIN</p>
+      <p>
+        <Button onClick={this.handleAlertDismiss.bind(this)}>CLOSE ALERT</Button>
+      </p>
+    </Alert> : '';
     return (
       <div className="App">
         <div className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
+          <Link to="/">
+            <img src={logo} className="App-logo" alt="logo" />
+          </Link>
           <h2>Appointmentz</h2>
+         {alertTrigger}
         </div>
         <div className="body">
           <Switch>
@@ -73,7 +95,8 @@ const mapStateToProps = (state) => {
     date: state.info.date,
     desc: state.info.desc,
     time: state.info.time,
-    tableRows: state.info.tableRows
+    tableRows: state.info.tableRows,
+    alertVisible: state.info.alertVisible
   }
 }
 
@@ -93,6 +116,9 @@ const mapDispatchToProps = (dispatch) => {
 
       setTableRows: (arr) => {
         dispatch(setTableRows(arr))
+      },
+      setAlertVisible: (status) => {
+        dispatch(setAlertVisible(status))
       }
   }
 }

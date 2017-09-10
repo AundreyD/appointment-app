@@ -2,6 +2,7 @@ export const SET_DATE = "SET_DATE";
 export const SET_TIME = "SET_TIME";
 export const SET_DESC = "SET_DESC";
 export const SET_TABLE_ROWS = "SET_TABLE_ROWS";
+export const SET_ALERT_VISIBLE = "SET_ALERT_VISIBLE";
 
 export const setDate = (date) =>{
     return {type: SET_DATE, date}
@@ -14,5 +15,8 @@ export const setDesc = (desc) =>{
 }
 export const setTableRows = (arr) =>{
     return {type: SET_TABLE_ROWS, arr}
+}
+export const setAlertVisible = (status) =>{
+    return {type: SET_ALERT_VISIBLE, status}
 }
 

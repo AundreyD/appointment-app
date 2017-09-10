@@ -28,6 +28,9 @@ export class App extends Component {
     this.props.setTime('00:00')
     this.props.setDesc('')
     this.props.setAlertVisible(false)
+    if(this.props.location.pathname !== '/'){
+      window.location.href = '/'
+    }
   }
   formatDate() {
     var d = new Date(),
